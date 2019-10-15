@@ -41,6 +41,7 @@ Par défaut, les fichiers de TP permettent d'accéder à un objet global pré-in
 
 **Pourquoi le noyau indique `0x302010` et pas `0x300000` comme adresse de début ? Indice: essayer de comprendre linker.lds, regardez également le code de "entry.s"**
 
+2000 => pour la pile noyau de base !
 ---
 
 ### Question 2
@@ -58,3 +59,29 @@ Par défaut, les fichiers de TP permettent d'accéder à un objet global pré-in
 ### Question 4
 
 **Essayez de lire/écrire en dehors de la RAM disponible (128MB). Que se passe-t-il ?**
+=> segment flat on a le droit donc de taper dans les 4Giga, il se passe donc rien.
+
+
+gdt_reg_t gdtr;
+size-t 
+
+get_gtdr(gdtr);
+n = (gdtr.limit+1)/sizeof(seg_desc_t); //nombre d'entree de la gdt
+for(i=0;i<n;i++){
+	seg_desc_t *dec = &gdtr.desc[i];
+	win32_t base = dec->base_J<<24 | dec->base_2 << 16 | dec->base_1;
+}
+
+gdt_flat_dac
+c0_desc(_d)
+d0_desc(_d)
+
+GDT[0].raw = OULL => 0 sur long long 
+
+
+GDT[3].base_1 = base
+GTD[3].base_2 = base >>16;
+GDT[3].base_3 = base >> 24
+GDT[3].limit_1 = 32-1
+GDT[3].type = SEC_DESC_DATA_RW;
+set_es(gdt_krn_seg_sel(3))
